@@ -3,7 +3,19 @@ const Contact = require("../models/contact");
 // CREATE CONTACT
 exports.createContact = async (req, res) => {
   try {
-    const contact = new Contact(req.body);
+    const { name, email, phone, address } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and email are required" });
+    }
+
+    const contact = new Contact({
+      userId: req.userId,
+      name,
+      email,
+      phone,
+      address
+    });
     const savedContact = await contact.save();
     res.status(201).json(savedContact);
   } catch (error) {
@@ -17,15 +29,13 @@ exports.getContacts = async (req, res) => {
 
     const search = req.query.search;
 
-    let query = {};
+    let query = { userId: req.userId };
 
     if (search) {
-      query = {
-        $or: [
-          { name: { $regex: search, $options: "i" } },
-          { email: { $regex: search, $options: "i" } }
-        ]
-      };
+      query.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } }
+      ];
     }
 
     const contacts = await Contact.find(query);
@@ -40,11 +50,15 @@ exports.getContacts = async (req, res) => {
 // UPDATE CONTACT
 exports.updateContact = async (req, res) => {
   try {
-    const updatedContact = await Contact.findByIdAndUpdate(
-      req.params.id,
+    const updatedContact = await Contact.findOneAndUpdate(
+      { _id: req.params.id, userId: req.userId },
       req.body,
       { new: true }
     );
+
+    if (!updatedContact) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
 
     res.json(updatedContact);
   } catch (error) {
@@ -55,7 +69,15 @@ exports.updateContact = async (req, res) => {
 // DELETE CONTACT
 exports.deleteContact = async (req, res) => {
   try {
-    await Contact.findByIdAndDelete(req.params.id);
+    const deletedContact = await Contact.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.userId
+    });
+
+    if (!deletedContact) {
+      return res.status(404).json({ message: "Contact not found" });
+    }
+
     res.json({ message: "Contact deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });

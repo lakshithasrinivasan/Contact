@@ -34,9 +34,10 @@ const corsOptions = {
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
-app.use("/api/contacts", contactRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/contacts", contactRoutes);
 app.get("/", (req, res) => {
   res.send("Server is running");
 });

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 
 const {
   createContact,
@@ -8,9 +9,10 @@ const {
   deleteContact
 } = require("../controllers/contactcontroller");
 
-router.post("/", createContact);
-router.get("/", getContacts);
-router.put("/:id", updateContact);
-router.delete("/:id", deleteContact);
+// All contact routes require authentication
+router.post("/", authMiddleware, createContact);
+router.get("/", authMiddleware, getContacts);
+router.put("/:id", authMiddleware, updateContact);
+router.delete("/:id", authMiddleware, deleteContact);
 
 module.exports = router;
