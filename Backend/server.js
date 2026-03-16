@@ -10,9 +10,31 @@ const app = express();
 // Connect Database
 connectDB();
 
+// CORS Configuration for frontend domains
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://contact-rnrc4wgxu-lakshithas-projects-b9fc9f3f.vercel.app',
+  'https://contact-chi-six.vercel.app',
+  'https://contact-dnsy.onrender.com'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 app.use("/api/contacts", contactRoutes);
 app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {

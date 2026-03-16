@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 const BLUE = "#2196F3";
 const BLUE_DARK = "#1565C0";
 const RED = "#F44336";
