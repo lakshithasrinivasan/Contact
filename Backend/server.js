@@ -16,9 +16,10 @@ const contactRoutes = require("./routes/contactRoutes");
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
-  'https://contact-rnrc4wgxu-lakshithas-projects-b9fc9f3f.vercel.app',
   'https://contact-chi-six.vercel.app',
-  'https://contact-dnsy.onrender.com'
+  'https://contact-git-main-lakshithas-projects-b9fc9f3f.vercel.app',
+  'https://contact-p5wljnm61-lakshithas-projects-b9fc9f3f.vercel.app',
+  'https://contact-1-l9td.onrender.com'
 ];
 
 const corsOptions = {

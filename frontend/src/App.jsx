@@ -8,21 +8,36 @@ const BG = "#f5f0e8";
 
 // --- API Helper ---
 const fetchApi = async (path, options = {}) => {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-    ...options,
-  });
+  try {
+    const config = {
+      method: options.method || "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+    };
+    
+    if (options.body) {
+      config.body = options.body;
+    }
 
-  const data = await res.json().catch(() => null);
+    const res = await fetch(`${API_BASE}${path}`, config);
+    
+    let data = null;
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      data = await res.json();
+    }
 
-  if (!res.ok) {
-    throw new Error(data?.message || "Request failed");
+    if (!res.ok) {
+      throw new Error(data?.message || `HTTP ${res.status}: ${res.statusText}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
   }
-
-  return data;
 };
 
 // --- Icons ---
