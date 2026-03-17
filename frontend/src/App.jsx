@@ -151,21 +151,523 @@ const BottomPanel = ({ orLabel, linkText, onLinkClick }) => (
   </div>
 );
 
-const PhoneFrame = ({ children }) => (
-  <div style={{
-    width: "min(90vw, 480px)",
-    minHeight: "min(90vh, 700px)",
+const PhoneFrame = ({ children, isMobile }) => {
+  const baseStyle = {
     background: "#fff",
-    borderRadius: "40px",
-    border: "3px solid #222",
     overflow: "hidden",
     display: "flex",
     flexDirection: "column",
     boxShadow: "0 20px 60px rgba(0,0,0,0.25)"
+  };
+
+  if (isMobile) {
+    return (
+      <div style={{
+        ...baseStyle,
+        width: "min(90vw, 480px)",
+        minHeight: "min(90vh, 700px)",
+        borderRadius: "40px",
+        border: "3px solid #222"
+      }}>
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      ...baseStyle,
+      width: "100%",
+      maxWidth: "1200px",
+      minHeight: "auto",
+      borderRadius: "8px",
+      border: "1px solid #e5e7eb"
+    }}>
+      {children}
+    </div>
+  );
+};
+
+// --- Desktop Screens ---
+const DesktopLoginScreen = ({ onSwitch, loading, error, email, setEmail, password, setPassword, onLogin, screenSize }) => (
+  <div style={{ 
+    display: "flex", 
+    alignItems: "center", 
+    justifyContent: "center", 
+    minHeight: "100vh", 
+    padding: screenSize >= 1920 ? "3rem" : screenSize >= 1366 ? "2.5rem" : "2rem" 
   }}>
-    {children}
+    <div style={{
+      background: "white", 
+      borderRadius: 16, 
+      padding: screenSize >= 1920 ? "3.5rem" : screenSize >= 1366 ? "3rem" : "3rem", 
+      maxWidth: screenSize >= 1920 ? 580 : 520, 
+      width: "100%",
+      boxShadow: "0 20px 60px rgba(0,0,0,0.15)", 
+      borderLeft: "6px solid " + BLUE
+    }}>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: screenSize >= 1920 ? "3rem" : "2.5rem" }}>
+        <LoginIcon />
+      </div>
+      <h2 style={{ 
+        fontSize: screenSize >= 1920 ? 40 : screenSize >= 1366 ? 32 : 32, 
+        fontWeight: 800, 
+        color: "#1a1a2e", 
+        margin: "0 0 0.75rem 0", 
+        textAlign: "center" 
+      }}>Welcome Back!</h2>
+      <p style={{ 
+        fontSize: screenSize >= 1920 ? 17 : screenSize >= 1366 ? 15 : 15, 
+        fontWeight: 600, 
+        color: "#666", 
+        textAlign: "center", 
+        marginBottom: screenSize >= 1920 ? "2.5rem" : "2rem" 
+      }}>Sign in to manage your contacts</p>
+      
+      <div style={{ display: "flex", flexDirection: "column", gap: screenSize >= 1920 ? "1.75rem" : "1.25rem" }}>
+        <div>
+          <label style={{ 
+            fontSize: screenSize >= 1920 ? 15 : 14, 
+            fontWeight: 700, 
+            marginBottom: "0.6rem", 
+            display: "block", 
+            color: "#444" 
+          }}>Email Address</label>
+          <InputField icon={<EmailIcon />} type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} autoComplete="off" />
+        </div>
+        <div>
+          <label style={{ 
+            fontSize: screenSize >= 1920 ? 15 : 14, 
+            fontWeight: 700, 
+            marginBottom: "0.6rem", 
+            display: "block", 
+            color: "#444" 
+          }}>Password</label>
+          <InputField icon={<LockIcon />} type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} autoComplete="new-password" />
+        </div>
+        {error && <p style={{ 
+          fontSize: screenSize >= 1920 ? 14 : 13, 
+          color: RED, 
+          textAlign: "center", 
+          margin: "0.5rem 0", 
+          padding: "0.75rem", 
+          background: "#fee2e2", 
+          borderRadius: 6 
+        }}>{error}</p>}
+        <PrimaryBtn onClick={onLogin} disabled={loading}>
+          {loading ? "Logging in..." : "Login Account"}
+        </PrimaryBtn>
+      </div>
+      
+      <hr style={{ margin: screenSize >= 1920 ? "2.5rem 0" : "2rem 0", border: "none", borderTop: "1px solid #e5e7eb" }} />
+      <p style={{ textAlign: "center", fontSize: screenSize >= 1920 ? 16 : 15, color: "#666" }}>
+        Don't have an account?{" "}
+        <span onClick={() => onSwitch("register")} style={{ color: BLUE, fontWeight: 800, cursor: "pointer", textDecoration: "underline" }}>
+          Create Account
+        </span>
+      </p>
+    </div>
   </div>
 );
+
+const DesktopRegisterScreen = ({ onSwitch, loading, error, form, setForm, onRegister, screenSize }) => {
+  const set = key => e => setForm(f => ({ ...f, [key]: e.target.value }));
+
+  return (
+    <div style={{ 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center", 
+      minHeight: "100vh", 
+      padding: screenSize >= 1920 ? "3rem" : screenSize >= 1366 ? "2.5rem" : "2rem" 
+    }}>
+      <div style={{
+        background: "white", 
+        borderRadius: 16, 
+        padding: screenSize >= 1920 ? "3.5rem" : screenSize >= 1366 ? "3rem" : "3rem", 
+        maxWidth: screenSize >= 1920 ? 580 : 520, 
+        width: "100%",
+        boxShadow: "0 20px 60px rgba(0,0,0,0.15)", 
+        borderLeft: "6px solid " + BLUE
+      }}>
+        <h2 style={{ 
+          fontSize: screenSize >= 1920 ? 40 : screenSize >= 1366 ? 32 : 32, 
+          fontWeight: 800, 
+          color: "#1a1a2e", 
+          margin: "0 0 0.75rem 0", 
+          textAlign: "center" 
+        }}>Join Us</h2>
+        <p style={{ 
+          fontSize: screenSize >= 1920 ? 17 : screenSize >= 1366 ? 15 : 15, 
+          fontWeight: 600, 
+          color: "#666", 
+          textAlign: "center", 
+          marginBottom: screenSize >= 1920 ? "2.5rem" : "2rem" 
+        }}>Create your account today</p>
+        
+        <div style={{ display: "flex", flexDirection: "column", gap: screenSize >= 1920 ? "1.75rem" : "1.25rem" }}>
+          <div>
+            <label style={{ 
+              fontSize: screenSize >= 1920 ? 15 : 14, 
+              fontWeight: 700, 
+              marginBottom: "0.6rem", 
+              display: "block", 
+              color: "#444" 
+            }}>Full Name</label>
+            <InputField icon={<UserIcon />} placeholder="John Doe" value={form.name} onChange={set("name")} autoComplete="off" />
+          </div>
+          <div>
+            <label style={{ 
+              fontSize: screenSize >= 1920 ? 15 : 14, 
+              fontWeight: 700, 
+              marginBottom: "0.6rem", 
+              display: "block", 
+              color: "#444" 
+            }}>Email Address</label>
+            <InputField icon={<EmailIcon />} type="email" placeholder="your@email.com" value={form.email} onChange={set("email")} autoComplete="off" />
+          </div>
+          <div>
+            <label style={{ 
+              fontSize: screenSize >= 1920 ? 15 : 14, 
+              fontWeight: 700, 
+              marginBottom: "0.6rem", 
+              display: "block", 
+              color: "#444" 
+            }}>Password</label>
+            <InputField icon={<LockIcon />} type="password" placeholder="••••••••" value={form.password} onChange={set("password")} autoComplete="new-password" />
+          </div>
+          {error && <p style={{ 
+            fontSize: screenSize >= 1920 ? 14 : 13, 
+            color: RED, 
+            textAlign: "center", 
+            margin: "0.5rem 0", 
+            padding: "0.75rem", 
+            background: "#fee2e2", 
+            borderRadius: 6 
+          }}>{error}</p>}
+          <PrimaryBtn onClick={onRegister} disabled={loading}>
+            {loading ? "Creating..." : "Create Account"}
+          </PrimaryBtn>
+        </div>
+        
+        <hr style={{ margin: screenSize >= 1920 ? "2.5rem 0" : "2rem 0", border: "none", borderTop: "1px solid #e5e7eb" }} />
+        <p style={{ textAlign: "center", fontSize: screenSize >= 1920 ? 16 : 15, color: "#666" }}>
+          Already have an account?{" "}
+          <span onClick={() => onSwitch("login")} style={{ color: BLUE, fontWeight: 800, cursor: "pointer", textDecoration: "underline" }}>
+            Back to Login
+          </span>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const DesktopContactsScreen = ({ contacts, loading, error, onLogout, form, setForm, onAddContact, onEditContact, onDeleteContact, editingId, screenSize, isMobile }) => {
+  const set = key => e => setForm(f => ({ ...f, [key]: e.target.value }));
+  const isEditing = !!editingId;
+  
+  // Responsive layout: on tablets (769-1024px), stack vertically; on larger screens use sidebar
+  const shouldStackVertically = screenSize < 1024;
+  const sidebarWidth = screenSize >= 1920 ? 420 : screenSize >= 1366 ? 380 : screenSize >= 1024 ? 320 : 300;
+  const gridColumns = screenSize >= 1920 ? 4 : screenSize >= 1366 ? 3 : screenSize >= 1024 ? 2 : 1;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh", background: "#f9fafb" }}>
+      {/* Header */}
+      <div style={{ 
+        padding: screenSize >= 1920 ? "2rem 2.5rem" : screenSize >= 1366 ? "1.75rem 2rem" : screenSize >= 1024 ? "1.25rem 1.5rem" : "1rem 1.25rem", 
+        borderBottom: "1px solid #e5e7eb", 
+        display: "flex", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        background: "white",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+        flexWrap: "wrap",
+        gap: "1rem"
+      }}>
+        <div style={{ flex: 1, minWidth: "200px" }}>
+          <h2 style={{ 
+            fontSize: screenSize >= 1920 ? 36 : screenSize >= 1366 ? 32 : screenSize >= 1024 ? 24 : 22, 
+            fontWeight: 800, 
+            color: "#1a1a2e", 
+            margin: 0 
+          }}>Contacts</h2>
+          <p style={{ 
+            fontSize: screenSize >= 1366 ? 15 : screenSize >= 1024 ? 14 : 13, 
+            color: "#666", 
+            margin: "0.5rem 0 0 0" 
+          }}>Total: {contacts.length} contacts</p>
+        </div>
+        <button
+          onClick={onLogout}
+          style={{
+            background: RED, color: "#fff", border: "none", borderRadius: 8,
+            padding: screenSize >= 1920 ? "12px 28px" : screenSize >= 1366 ? "10px 20px" : screenSize >= 1024 ? "8px 16px" : "8px 14px", 
+            fontSize: screenSize >= 1920 ? 16 : screenSize >= 1366 ? 15 : screenSize >= 1024 ? 14 : 13, 
+            fontWeight: 700, 
+            cursor: "pointer",
+            transition: "all 0.2s",
+            minHeight: screenSize >= 1024 ? 44 : 40,
+            whiteSpace: "nowrap"
+          }}
+          onMouseEnter={e => e.target.style.background = "#d32f2f"}
+          onMouseLeave={e => e.target.style.background = RED}
+        >
+          Logout
+        </button>
+      </div>
+
+      {/* Main Content - Responsive Layout: Two Column on desktop, Single Column on tablets */}
+      <div style={{ display: "flex", flex: 1, overflow: "hidden", flexDirection: shouldStackVertically ? "column" : "row" }}>
+        {/* Left Sidebar - Form */}
+        <div style={{
+          width: shouldStackVertically ? "100%" : sidebarWidth,
+          minWidth: shouldStackVertically ? "100%" : sidebarWidth,
+          maxHeight: shouldStackVertically ? "auto" : "100%",
+          borderRight: shouldStackVertically ? "none" : "1px solid #e5e7eb",
+          borderBottom: shouldStackVertically ? "1px solid #e5e7eb" : "none",
+          background: "white",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto"
+        }}>
+          <div style={{ padding: screenSize >= 1920 ? "2.5rem" : screenSize >= 1366 ? "2rem" : screenSize >= 1024 ? "1.5rem" : "1.25rem" }}>
+            <div style={{ 
+              background: isEditing ? "#dbeafe" : "#eff6ff", 
+              borderRadius: 8, 
+              padding: screenSize >= 1920 ? "1.75rem" : screenSize >= 1366 ? "1.5rem" : screenSize >= 1024 ? "1.25rem" : "1rem",
+              marginBottom: "1.5rem"
+            }}>
+              <p style={{ 
+                fontSize: screenSize >= 1920 ? 20 : screenSize >= 1366 ? 18 : screenSize >= 1024 ? 16 : 15, 
+                fontWeight: 800, 
+                color: "#1a1a2e", 
+                margin: "0 0 1rem 0" 
+              }}>
+                {isEditing ? "✏️ Edit Contact" : "➕ Add Contact"}
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+                <div>
+                  <label style={{ fontSize: screenSize >= 1024 ? 13 : 12, fontWeight: 700, marginBottom: "0.5rem", display: "block", color: "#444" }}>Full Name</label>
+                  <InputField icon={<UserIcon />} placeholder="John Doe" value={form.name} onChange={set("name")} />
+                </div>
+                <div>
+                  <label style={{ fontSize: screenSize >= 1024 ? 13 : 12, fontWeight: 700, marginBottom: "0.5rem", display: "block", color: "#444" }}>Email</label>
+                  <InputField icon={<EmailIcon />} type="email" placeholder="john@example.com" value={form.email} onChange={set("email")} />
+                </div>
+                <div>
+                  <label style={{ fontSize: screenSize >= 1024 ? 13 : 12, fontWeight: 700, marginBottom: "0.5rem", display: "block", color: "#444" }}>Phone</label>
+                  <InputField icon={<PhoneIcon />} type="tel" placeholder="123-456-7890" value={form.phone} onChange={set("phone")} />
+                </div>
+                <div>
+                  <label style={{ fontSize: screenSize >= 1024 ? 13 : 12, fontWeight: 700, marginBottom: "0.5rem", display: "block", color: "#444" }}>Address</label>
+                  <InputField icon={<PinIcon />} placeholder="123 Main St" value={form.address} onChange={set("address")} />
+                </div>
+                <div style={{ display: "flex", gap: "0.75rem" }}>
+                  <PrimaryBtn onClick={onAddContact} disabled={loading}>
+                    {isEditing ? "Update" : "Add"}
+                  </PrimaryBtn>
+                  {isEditing && (
+                    <button onClick={() => setForm({ name: "", email: "", phone: "", address: "" })} 
+                      style={{ flex: 1, background: "#e5e7eb", border: "none", borderRadius: 6, padding: screenSize >= 1024 ? "10px" : "8px", fontSize: screenSize >= 1024 ? 13 : 12, fontWeight: 700, cursor: "pointer", transition: "background 0.2s", minHeight: screenSize >= 1024 ? 40 : 36 }}
+                      onMouseEnter={e => e.target.style.background = "#d1d5db"}
+                      onMouseLeave={e => e.target.style.background = "#e5e7eb"}>
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div style={{ 
+                padding: "1rem", 
+                background: "#fee2e2", 
+                border: "1px solid #fecaca",
+                borderRadius: 6, 
+                color: "#991b1b",
+                fontSize: 13
+              }}>
+                {error}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right Content Area - Contacts List */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflowY: "auto" }}>
+          <div style={{ 
+            padding: screenSize >= 1920 ? "2.5rem" : screenSize >= 1366 ? "2rem" : screenSize >= 1024 ? "1.5rem" : "1.25rem" 
+          }}>
+            {loading && (
+              <div style={{ textAlign: "center", padding: "3rem 1rem" }}>
+                <p style={{ fontSize: screenSize >= 1024 ? 16 : 14, color: "#999" }}>Loading contacts...</p>
+              </div>
+            )}
+            
+            {!loading && contacts.length === 0 && (
+              <div style={{ 
+                textAlign: "center", 
+                padding: "2rem 1rem",
+                background: "white",
+                borderRadius: 8
+              }}>
+                <p style={{ fontSize: screenSize >= 1024 ? 18 : 16, color: "#999", margin: 0 }}>No contacts yet</p>
+                <p style={{ fontSize: screenSize >= 1024 ? 14 : 13, color: "#bbb", margin: "0.5rem 0 0 0" }}>Add your first contact using the form {shouldStackVertically ? "above" : "on the left"}</p>
+              </div>
+            )}
+
+            {!loading && contacts.length > 0 && (
+              <>
+                <h3 style={{ 
+                  fontSize: screenSize >= 1920 ? 24 : screenSize >= 1366 ? 20 : screenSize >= 1024 ? 18 : 16, 
+                  fontWeight: 700, 
+                  color: "#1a1a2e", 
+                  margin: "0 0 2rem 0" 
+                }}>
+                  All Contacts ({contacts.length})
+                </h3>
+                <div style={{ 
+                  display: "grid", 
+                  gridTemplateColumns: shouldStackVertically ? "1fr" : `repeat(auto-fill, minmax(${screenSize >= 1920 ? 340 : screenSize >= 1366 ? 300 : screenSize >= 1024 ? 250 : 280}px, 1fr))`,
+                  gap: screenSize >= 1920 ? "2rem" : screenSize >= 1366 ? "1.75rem" : screenSize >= 1024 ? "1.25rem" : "1rem"
+                }}>
+                  {contacts.map(c => (
+                    <div key={c._id} style={{ 
+                      background: "white", 
+                      border: "1px solid #e5e7eb", 
+                      borderRadius: 10, 
+                      padding: screenSize >= 1920 ? "1.75rem" : screenSize >= 1366 ? "1.5rem" : screenSize >= 1024 ? "1.25rem" : "1rem",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%"
+                    }}
+                    onMouseEnter={e => {
+                      if (!('ontouchstart' in window)) { // Only on desktop
+                        e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.15)";
+                        e.currentTarget.style.transform = "translateY(-4px)";
+                        e.currentTarget.style.borderColor = BLUE;
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!('ontouchstart' in window)) { // Only on desktop
+                        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.borderColor = "#e5e7eb";
+                      }
+                    }}>
+                      <div style={{ marginBottom: "1rem", flex: 1 }}>
+                        <p style={{ 
+                          fontSize: screenSize >= 1920 ? 20 : screenSize >= 1366 ? 18 : screenSize >= 1024 ? 16 : 15, 
+                          fontWeight: 800, 
+                          color: "#1a1a2e", 
+                          margin: 0,
+                          wordBreak: "break-word"
+                        }}>{c.name}</p>
+                        <p style={{ fontSize: screenSize >= 1024 ? 13 : 12, color: "#999", margin: "0.5rem 0 0 0" }}>Contact</p>
+                      </div>
+
+                      <div style={{ 
+                        display: "flex", 
+                        flexDirection: "column", 
+                        gap: "0.75rem", 
+                        marginBottom: "1.25rem", 
+                        fontSize: screenSize >= 1366 ? 14 : screenSize >= 1024 ? 13 : 12 
+                      }}>
+                        <p style={{ color: "#666", margin: 0, display: "flex", alignItems: "flex-start", gap: "0.5rem", overflowWrap: "break-word" }}>
+                          <span style={{ color: "#2196F3", fontWeight: 700, flexShrink: 0 }}>📧</span>
+                          <span style={{ wordBreak: "break-word" }}>{c.email}</span>
+                        </p>
+                        {c.phone && (
+                          <p style={{ color: "#666", margin: 0, display: "flex", alignItems: "flex-start", gap: "0.5rem", overflowWrap: "break-word" }}>
+                            <span style={{ color: "#2196F3", fontWeight: 700, flexShrink: 0 }}>📱</span>
+                            <span style={{ wordBreak: "break-word" }}>{c.phone}</span>
+                          </p>
+                        )}
+                        {c.address && (
+                          <p style={{ color: "#666", margin: 0, display: "flex", alignItems: "flex-start", gap: "0.5rem", overflowWrap: "break-word" }}>
+                            <span style={{ color: "#2196F3", fontWeight: 700, flexShrink: 0 }}>📍</span>
+                            <span style={{ wordBreak: "break-word" }}>{c.address}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div style={{ display: "flex", gap: "0.75rem", marginTop: "auto" }}>
+                        <button 
+                          onClick={() => onEditContact(c)} 
+                          style={{ 
+                            flex: 1, 
+                            background: BLUE, 
+                            color: "#fff", 
+                            border: "none", 
+                            borderRadius: 6, 
+                            padding: screenSize >= 1366 ? "12px" : screenSize >= 1024 ? "10px" : "8px", 
+                            fontSize: screenSize >= 1366 ? 14 : screenSize >= 1024 ? 13 : 12, 
+                            fontWeight: 600, 
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            minHeight: screenSize >= 1024 ? 40 : 36,
+                            touchAction: "manipulation"
+                          }}
+                          onMouseEnter={e => {
+                            if (!('ontouchstart' in window)) {
+                              e.target.style.background = BLUE_DARK;
+                              e.target.style.transform = "scale(1.02)";
+                            }
+                          }}
+                          onMouseLeave={e => {
+                            if (!('ontouchstart' in window)) {
+                              e.target.style.background = BLUE;
+                              e.target.style.transform = "scale(1)";
+                            }
+                          }}>
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => onDeleteContact(c._id)} 
+                          style={{ 
+                            flex: 1, 
+                            background: RED, 
+                            color: "#fff", 
+                            border: "none", 
+                            borderRadius: 6, 
+                            padding: screenSize >= 1366 ? "12px" : screenSize >= 1024 ? "10px" : "8px", 
+                            fontSize: screenSize >= 1366 ? 14 : screenSize >= 1024 ? 13 : 12, 
+                            fontWeight: 600, 
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            minHeight: screenSize >= 1024 ? 40 : 36,
+                            touchAction: "manipulation"
+                          }}
+                          onMouseEnter={e => {
+                            if (!('ontouchstart' in window)) {
+                              e.target.style.background = "#d32f2f";
+                              e.target.style.transform = "scale(1.02)";
+                            }
+                          }}
+                          onMouseLeave={e => {
+                            if (!('ontouchstart' in window)) {
+                              e.target.style.background = RED;
+                              e.target.style.transform = "scale(1)";
+                            }
+                          }}>
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --- Screens ---
 const LoginScreen = ({ onSwitch, loading, error, email, setEmail, password, setPassword, onLogin }) => (
@@ -285,6 +787,8 @@ export default function App() {
   const [screen, setScreen] = useState("login");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [screenSize, setScreenSize] = useState(window.innerWidth);
 
   // Auth state
   const [email, setEmail] = useState("");
@@ -295,6 +799,18 @@ export default function App() {
   const [contacts, setContacts] = useState([]);
   const [contactForm, setContactForm] = useState({ name: "", email: "", phone: "", address: "" });
   const [editingId, setEditingId] = useState(null);
+
+  // Handle window resize with better breakpoints
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setScreenSize(width);
+      setIsMobile(width <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const authHeaders = useMemo(
     () => (token ? { Authorization: `Bearer ${token}` } : {}),
@@ -432,20 +948,73 @@ export default function App() {
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      padding: "1rem",
+      padding: isMobile ? "1rem" : "2rem",
       fontFamily: "'Nunito', sans-serif",
       width: "100%"
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 480px) {
           body { padding: 0; margin: 0; }
+        }
+        @media (max-width: 768px) {
+          .desktop-only { display: none !important; }
+        }
+        @media (min-width: 769px) {
+          .mobile-frame { display: none !important; }
         }
       `}</style>
 
-      <PhoneFrame>
+      <div className="mobile-frame">
+        <PhoneFrame isMobile={isMobile}>
+          {!token && screen === "login" && (
+            <LoginScreen
+              onSwitch={setScreen}
+              loading={loading}
+              error={error}
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              onLogin={handleLogin}
+            />
+          )}
+          {!token && screen === "register" && (
+            <RegisterScreen
+              onSwitch={setScreen}
+              loading={loading}
+              error={error}
+              form={regForm}
+              setForm={setRegForm}
+              onRegister={handleRegister}
+            />
+          )}
+          {token && (
+            <ContactsScreen
+              contacts={contacts}
+              loading={loading}
+              error={error}
+              onLogout={handleLogout}
+              form={contactForm}
+              setForm={setContactForm}
+              onAddContact={handleAddContact}
+              onEditContact={handleEditContact}
+              onDeleteContact={handleDeleteContact}
+              editingId={editingId}
+            />
+          )}
+        </PhoneFrame>
+      </div>
+
+      <div className="desktop-only" style={{
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        background: "white"
+      }}>
         {!token && screen === "login" && (
-          <LoginScreen
+          <DesktopLoginScreen
             onSwitch={setScreen}
             loading={loading}
             error={error}
@@ -454,20 +1023,22 @@ export default function App() {
             password={password}
             setPassword={setPassword}
             onLogin={handleLogin}
+            screenSize={screenSize}
           />
         )}
         {!token && screen === "register" && (
-          <RegisterScreen
+          <DesktopRegisterScreen
             onSwitch={setScreen}
             loading={loading}
             error={error}
             form={regForm}
             setForm={setRegForm}
             onRegister={handleRegister}
+            screenSize={screenSize}
           />
         )}
         {token && (
-          <ContactsScreen
+          <DesktopContactsScreen
             contacts={contacts}
             loading={loading}
             error={error}
@@ -478,9 +1049,11 @@ export default function App() {
             onEditContact={handleEditContact}
             onDeleteContact={handleDeleteContact}
             editingId={editingId}
+            screenSize={screenSize}
+            isMobile={isMobile}
           />
         )}
-      </PhoneFrame>
+      </div>
     </div>
   );
 }
